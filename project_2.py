@@ -37,6 +37,30 @@ print(corra)
 sns.regplot(x=df['IMDB_Score'], y=df['Runtime'])
 plt.show()
 
+"""
+#IMDB Puanı en yüksek olan ilk 10 'Genre' hangileridir? Görselleştiriniz.
+df.groupby("Genre").agg({"IMDB Score": "max"}).sort_values(by="IMDB Score", ascending=False)[0:10]
+genrescore_on = df.groupby("Genre").agg({"IMDB Score": "max"}).sort_values(by="IMDB Score", ascending=False)[
+                0:10].reset_index()
+
+
+print (df.groupby("Genre").agg({"IMDB Score": "max"}).sort_values(by="IMDB Score", ascending=False)[0:10])
+sns.lineplot(y=genrescore_on["Genre"], x=genrescore_on["IMDB Score"])
+plt.show()
+"""
+
+"""
+#Veri setinde bulunan filmlerde en çok kullanılan 3 dili bulunuz.
+data['Language'].value_counts().head(3)
+"""
+
+"""
+#Hangi dilde yayımlanan filmler en düşük ortalama IMBD puanına sahiptir? Görselleştiriniz.(Görselleştirmesinden emin değilim)
+imdb_most_low = df[df['IMDB Score']<5][['Language']].sort_values('IMDB Score', ascending = True)
+
+fig = px.bar(imdb_most_low, x='Language', y= 'IMDB Score', color = 'Title')
+fig.show()
+"""
 
 """ 
 #IMDP Puanı yüksek olan 10 film.
