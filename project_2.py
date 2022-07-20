@@ -29,7 +29,11 @@ df = pd.read_csv('./NetflixOriginals.csv',encoding="ISO-8859-1")
 
 #Sütunlardaki boşlukları alt tire ile değiştirdim
 df.columns = df.columns.str.replace(" ","_")
-
+df['Genre']=df['Genre'].str.strip()
+df['Genre']=df['Genre'].str.replace(" ","-")
+df['Genre']=df['Genre'].str.replace("/","-")
+df['Genre']=df['Genre'].str.replace("---","-")
+df['Genre']=df['Genre'].str.lower()
 
 
 """
