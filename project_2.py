@@ -70,18 +70,27 @@ df.sort_values(by="Runtime", ascending = False, inplace = True)
 data = df.reset_index().head(10)
 print(data) 
 sns.violinplot(x='Runtime',y='Title',data =df.nlargest(10, 'Runtime'))
-plt.show()
+plt.show() 
 
+""" 
 # 'Genre' Sütunu kaç kategoriye sahiptir ve bu kategoriler nelerdir? Görselleştirerek ifade ediniz.
 # (TAMAMLANMADI [BOŞTA])
 data = df["Genre"].unique()
 print(data)
 #set(df.Genre)
 
+""" 
 # İngilizce çekilen filmler içerisinde hangi tür en yüksek IMDB puanına sahiptir?
-# (TAMAMLANMADI [Fatih] )
+
 engMovies = df[df["Language"] == "English"]
-print(engMovies["IMDB_Score"].idxmax())
+df_eng_gen = engMovies.groupby(["Genre"])["IMDB_Score"].mean().sort_values(ascending=False).head(5)
+plt.pie(df_eng_gen, labels=df_eng_gen.index,autopct='%1.1f%%', explode=[0.1,0,0,0,0], shadow=True, startangle=90)
+plt.show()
+print(df_eng_gen)
+
+
+"""
+print(engMovies["IMDB_Score"].value_counts())
 
 # -------------------------------
 # print(engMovies["IMDB_Score"].median())   6.4
@@ -93,7 +102,9 @@ print(df.shape)
 
 # sütunların data typlearına bakıyorum
 print(df.dtypes)
-print(df.info()) 
+print(df.info())  
+
+"""
 
 
 # Her bir dilin en fazla kullanıldığı "Genre" nedir? (A)
@@ -102,3 +113,4 @@ ax=ax.sort_values(['Countx','Language','Genre'], ascending=False).reset_index(dr
 bx=ax.groupby('Language').max('Countx').reset_index()
 cx=pd.merge(ax, bx, how='inner', on=['Language', 'Countx'])
 print(cx)
+
