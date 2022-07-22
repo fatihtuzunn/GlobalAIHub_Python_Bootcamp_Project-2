@@ -90,6 +90,10 @@ def topRuntime(df):
     print(data) 
     sns.violinplot(x='Runtime',y='Title',data =df.nlargest(10, 'Runtime'))
     plt.show() 
+    
+    
+#Hangi yılın toplam runtime süresi en fazladır?
+df.groupby("Premiere").agg({"Runtime": "sum"}).sort_values(by="Runtime", ascending=False)[0:1]
 
 
 # 'Genre' Sütunu kaç kategoriye sahiptir ve bu kategoriler nelerdir? Görselleştirerek ifade ediniz.
