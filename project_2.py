@@ -20,21 +20,12 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+import plotly.express as px
 
 df = pd.read_csv('./NetflixOriginals.csv',encoding="ISO-8859-1")
 
 # Sütunlardaki boşlukları alt tire ile değiştirdim.
 df.columns = df.columns.str.replace(" ","_")
-
-
-""" 
-# Genre fix. (A)
-df['Genre']=df['Genre'].str.strip()
-df['Genre']=df['Genre'].str.replace(" ","-")
-df['Genre']=df['Genre'].str.replace(" ","-")
-df['Genre']=df['Genre'].str.replace("---","-")
-df['Genre']=df['Genre'].str.lower()
-"""
 
  
 # IMDB puanı ile 'Runtime' arasında nasıl bir korelasyon vardır? İnceleyip görselleştiriniz.
@@ -57,18 +48,6 @@ def mostUsedLang(df):
     df['Language'].value_counts().head(3) 
 
 # Hangi dilde yayımlanan filmler en düşük ortalama IMBD puanına sahiptir? Görselleştiriniz.
-
-""" 
-imdb_most_low = df[df['IMDB_Score']<5][["Language", "IMDB_Score"] ].sort_values('IMDB_Score', ascending = True)
-
-                # Plotly kütüphanesi kullanmak amaçlanmış sanırım. (Fatih)
-                # fig = px.bar(imdb_most_low, x='Language', y= 'IMDB_Score', color = 'Title')
-                # fig.show()
-# Alternatif olarak. (Fatih)
-
-    #Yeniden yapılandırılıdı son hali kod sahibinin insiyatifinde.(Fatih)
-#Dile göre gruplandırıldı. IMDB puanlarının ortalaması alındı. Ortalama en düşük IMDB puanına sahip 5 dil seçildi.
-"""
 def lowScoreLangs(df):
     imdb_most_low = df.groupby(["Language"])["IMDB_Score"].mean().sort_values(ascending=True).reset_index().head(5)
     print(f"En düşük IMDB ortalamasına sahip 5 dil; \n{imdb_most_low}")
@@ -97,8 +76,6 @@ df.groupby("Premiere").agg({"Runtime": "sum"}).sort_values(by="Runtime", ascendi
 
 
 # 'Genre' Sütunu kaç kategoriye sahiptir ve bu kategoriler nelerdir? Görselleştirerek ifade ediniz.
-
-
 def visualCategPlot(df):
     df['Genre']=df['Genre'].str.replace(" /","/")
     df['Genre']=df['Genre'].str.replace("/ ","/")
@@ -137,12 +114,6 @@ def visualCategPlot(df):
     plt.show()  
 
 
-
-
-
-
-
-
 def categReport(df):
     strippted = df['Genre'].str.split("/")
     categories_array = np.unique(np.char.strip(np.array([x for xs in strippted for x in xs])))  
@@ -165,25 +136,6 @@ def highestEngMovie(df):
 
 
 
-
-
-"""
-print(engMovies["IMDB_Score"].value_counts())
-
-# -------------------------------
-# print(engMovies["IMDB_Score"].median())   6.4
-result = engMovies[engMovies["IMDB_Score"] > 6.4]
-print(result["Genre"].mode())
-
-# satır sayısı, sütun sayısı gösterir
-print(df.shape)
-
-# sütunların data typlearına bakıyorum
-print(df.dtypes)
-print(df.info())  
-
-"""
-
  
 # Her bir dilin en fazla kullanıldığı "Genre" nedir? (A)
 def topGenreFromLang(df):
@@ -194,7 +146,33 @@ def topGenreFromLang(df):
     print(cx)
 
 
+#Veri setine göre uzun soluklu filmler hangi dilde oluşturulmuştur? Görselleştirme yapınız.
+def q1(data):
+    full_length = data[data["Runtime"] > 90]
+    full_language = full_length.Language.value_counts()
+    fig = px.pie(full_language, names=full_language.index, values=full_language.values, title='Feature-length Movies')
+    fig.show() 
 
+
+
+#2019 Ocak ile 2020 Haziran tarihleri arasında 'Documentary' türünde çekilmiş filmlerin IMDB değerlerini bulup görselleştiriniz.
+def q2(data):
+    type(data['Premiere'])
+    data['Premiere'] = pd.to_datetime(data.Premiere)
+    docIMDB = data[("2018-12-31" < data['Premiere']) & (data['Premiere'] < "2020-7-1")]
+    docIMDB=docIMDB.query("Genre == 'Documentary'")
+    docIMDB.plot.scatter("Premiere","IMDB Score",color = {"red"})
+    plt.xlabel("Premiere")
+    plt.ylabel("IMDB Score")
+    plt.title("Documentary")
+    plt.show()
+
+
+#'Hindi' Dilinde çekilmiş olan filmlerin ortalama 'runtime' suresi nedir?
+def q4(data):
+    HindRun = data.query("Language == 'Hindi'")
+    HindRun = HindRun["Runtime"].mean()
+    print(HindRun) 
 
 correlation(df)
 topScoreGenre(df)
@@ -205,4 +183,8 @@ topRuntime(df)
 visualCategPlot(df)
 categReport(df)
 highestEngMovie(df)
-topGenreFromLang(df)
+topGenreFromLang(df) 
+
+q1(df)
+q2(df)
+q4(df)
